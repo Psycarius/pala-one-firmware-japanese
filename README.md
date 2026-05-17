@@ -114,32 +114,123 @@ Return from `app_main` to exit back to the Apps menu. Apps decide their own exit
 - Lightweight portable design
 - Open-source firmware
 
+# pala-one-japanese
+
+Pala One — Japanese Edition, a modified version of [Paul Lagier's Pala One firmware](https://paullagier.craft.me/ereader2389232) for the Heltec Wireless Paper V1.2.
+
+The goal of this fork is to extend the original firmware with Japanese language support and a flashcard mode for vocabulary study, while keeping the same minimal, distraction-free reading experience.
+
+## Changes from Original
+
+### Japanese Language Support
+- Font replaced with `u8g2_font_b16_t_japanese3`, covering Hiragana, Katakana and a broad range of Kanji
+- `TOP_PAD` increased from 0 to 4px to prevent the top of the first line being clipped on every page
+- Selection highlight changed from bold text to an `*` prefix, as the new font does not have a bold variant
+
+### Flashcard Mode
+- Automatic detection — if a file contains the `===` delimiter the device enters flashcard mode with no configuration needed
+- Long press jumps to a random card in the deck, always landing on the front (Japanese) side
+- File scan on open is limited to the first 2KB so non-flashcard books open at normal speed
+- `randomSeed` initialised on boot using the ESP32 microsecond timer for genuine randomness
+
+## Flashcard File Format
+
+```
+猫
+ねこ
+---
+Cat
+猫が好きです - I like cats
+===
+山
+やま
+---
+Mountain
+あの山は高いです - That mountain is tall
+===
+```
+
+- `---` separates the front (Japanese) side from the back (English) side
+- `===` separates one card from the next
+- Both delimiters act as invisible page breaks and do not appear on screen
+
+### Navigation in Flashcard Mode
+
+| Action | Result |
+|---|---|
+| Single press | Advance to next side or next card |
+| Double press | Go back one side |
+| Long press (850ms) | Jump to a random card, landing on the front side |
+
+## Flashcard Decks
+
+One JLPT study decks are included:
+
+- `N5_kanji.txt` — 100 cards covering all JLPT N5 kanji, with readings and example sentences
+
+## Board Version
+
+This firmware supports the **Heltec Wireless Paper V1.2** only.
+
+The board version is printed on the back of the PCB. For V1.1 support refer to the original Pala One firmware.
+
+## Dependencies
+
+Install the following in Arduino IDE via **Sketch → Include Library → Manage Libraries**:
+
+| Library | Author |
+|---|---|
+| U8g2 | oliver |
+| U8g2_for_Adafruit_GFX | oliver |
+| heltec-eink-modules | Todd Herbert |
+| Adafruit GFX Library | Adafruit |
+
+## Reading Japanese Books
+
+Upload plain `.txt` files saved as **UTF-8** via the device's built-in WiFi upload interface. Good sources for beginner Japanese content:
+
+- **Tadoku Free Graded Readers** — [tadoku.org/japanese/free-books](https://tadoku.org/japanese/free-books/) — Level 0 books are almost entirely kana and completely free
+- **NHK Web Easy** — [www3.nhk.or.jp/news/easy](https://www3.nhk.or.jp/news/easy/) — Real news in simple Japanese with furigana
+- **Aozora Bunko** — [aozora.gr.jp](https://www.aozora.gr.jp) — Free public domain Japanese literature
+
+## Features
+
+- Japanese, Hiragana, Katakana and Kanji rendering
+- Flashcard mode with random card selection
+- TXT book support
+- Adjustable font size
+- Adjustable line spacing
+- Deep sleep mode
+- Reading progress saving
+- USB-C charging
+
+## Credits
+
+- Original Pala One firmware by **Paul Lagier** — [project page](https://paullagier.craft.me/ereader2389232)
+- Font: `u8g2_font_b16_t_japanese3` from the [U8g2 library](https://github.com/olikraus/u8g2) by oliver
+
+## License & Copyright
+
+This fork is based on Paul Lagier's Pala One firmware and is shared with his permission for personal and educational use.
+
+Please do not:
+- reupload paid project files from the original project
+- redistribute complete download packages
+- resell the project files
+- commercially redistribute modified versions of paid assets
+
+The original design, branding, documentation and paid project assets remain copyright © Paul Lagier.
+
+---
+
+Fork by Psycarius — based on the original Pala One by Paul Lagier
+
 ## Hardware
 
 Pala One is based on:
 - Heltec Wireless Paper
 - 3D printed housing
 - LiPo battery
-
-## Downloads
-
-This repository contains the firmware source code for the project.
-
-Additional files such as:
-- STL files
-- STEP files
-- assembly guides
-- printable files
-- project downloads
-
-are available separately via Ko-fi:
-
-https://ko-fi.com/s/e14ed892ea
-
-## Community & Modifications
-
-Community improvements, forks and firmware modifications are welcome.  
-If you build your own version or improve the project, feel free to share it with the community.
 
 ## License & Copyright
 
@@ -153,6 +244,3 @@ Please do not:
 
 The design, branding, documentation and paid project assets remain copyright © Paul Lagier.
 
----
-
-Created by Paul Lagier
